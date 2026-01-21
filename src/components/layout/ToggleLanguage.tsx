@@ -1,20 +1,22 @@
 'use client';
-import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
-import { routing } from '@/i18n/routing';
-import { usePathname } from 'next/navigation';
-import { useLocale } from 'next-intl';
-export const ToggleLanguage = () => {
+import { Suspense } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
+import { useSearchParams } from 'next/navigation';
+import { routing, useRouter, usePathname } from '@/i18n/routing';
+
+const ToggleLanguageInner = () => {
+  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const t = useTranslations('Header');
 
-  const locale = useLocale();
-
   const switchLanguage = (newLocale: string) => {
-    // 現在のパスから言語部分を除去して新しい言語を追加
-    const newPath = pathname.replace(/^\/[^\/]+/, '');
-    router.push(`/${newLocale}${newPath}`);
+    // クエリパラメータを維持
+    const queryString = searchParams.toString();
+    const fullPath = queryString ? `${pathname}?${queryString}` : pathname;
+
+    router.replace(fullPath, { locale: newLocale });
   };
 
   return (
@@ -33,5 +35,13 @@ export const ToggleLanguage = () => {
         }
       })}
     </div>
+  );
+};
+
+export const ToggleLanguage = () => {
+  return (
+    <Suspense fallback={<div className="w-16 h-6" />}>
+      <ToggleLanguageInner />
+    </Suspense>
   );
 };
