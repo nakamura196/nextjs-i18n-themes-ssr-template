@@ -1,6 +1,5 @@
-import { NextIntlClientProvider } from 'next-intl';
+import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
-import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import Header from '@/components/layout/Header';
@@ -13,9 +12,18 @@ import type { Metadata } from 'next';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const { locale } = await params;
-  return getMetadata(locale as 'ja' | 'en');
+  const activeLocale = hasLocale(routing.locales, locale) ? locale : routing.defaultLocale;
+  return getMetadata(activeLocale);
 }
 
 type LayoutProps = {
@@ -24,17 +32,14 @@ type LayoutProps = {
 };
 
 export default async function RootLayout({ children, params }: LayoutProps) {
-  const locale = (await params).locale;
+  const { locale } = await params;
   // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes(locale as 'en' | 'ja')) {
+  if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
 
   // SSR対応
   setRequestLocale(locale);
-
-  // getMessagesを同期的に呼び出すように変更
-  const messages = await getMessages();
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -45,7 +50,8 @@ export default async function RootLayout({ children, params }: LayoutProps) {
           enableSystem={true}
           disableTransitionOnChange
         >
-          <NextIntlClientProvider messages={messages}>
+          {/* messages are inherited from the request config (next-intl v4) */}
+          <NextIntlClientProvider>
             <Header />
             {children}
             <Footer />

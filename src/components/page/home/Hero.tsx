@@ -1,25 +1,10 @@
 import { FaArrowRight } from 'react-icons/fa';
 import { Link } from '@/i18n/routing';
 import { getTranslations } from 'next-intl/server';
-// import { getLocale } from 'next-intl/server';
-// import { getNode } from '@/lib/api/drupal/queries';
 
 export default async function Hero() {
   const t = await getTranslations('HomePage');
   const tCommon = await getTranslations('Common');
-  // const locale = await getLocale();
-
-  /*
-  const node = await getNode('page', 'a13c1495-9d45-4439-a8c2-e93d4fdc32f4', locale);
-
-  if (!node) {
-    return null;
-  }
-
-  const description = node.attributes.body.value;
-  */
-
-  // const description = 'test';
 
   return (
     <section className="relative">
@@ -51,7 +36,7 @@ export default async function Hero() {
                 className="inline-flex items-center justify-center bg-white dark:bg-white/90 text-blue-600 dark:text-blue-500 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 dark:hover:bg-white transition-colors w-full sm:w-auto"
               >
                 {t('hero.cta')}
-                <FaArrowRight className="ml-2" />
+                <FaArrowRight className="ml-2" aria-hidden="true" />
               </Link>
 
               <Link
@@ -59,7 +44,7 @@ export default async function Hero() {
                 className="inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors w-full sm:w-auto"
               >
                 {t('hero.secondary')}
-                <FaArrowRight className="ml-2" />
+                <FaArrowRight className="ml-2" aria-hidden="true" />
               </Link>
             </div>
           </div>

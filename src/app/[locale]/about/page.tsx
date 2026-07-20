@@ -3,6 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import PageLayout from '@/components/layout/PageLayout';
 import { getPageMetadata } from '@/constants/metadata';
 import { PROSE_STYLES } from '@/constants/styles';
+import { hasLocale } from 'next-intl';
 import type { Metadata } from 'next';
 
 // SSR対応
@@ -12,12 +13,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
+  const activeLocale = hasLocale(routing.locales, locale) ? locale : routing.defaultLocale;
   const pageInfo = {
     ja: { title: '私たちについて', description: '私たちの会社概要とミッションについてご紹介します。' },
     en: { title: 'About Us', description: 'Learn about our company and mission.' },
   };
-  
-  return getPageMetadata(locale as 'ja' | 'en', pageInfo[locale as 'ja' | 'en']);
+
+  return getPageMetadata(activeLocale, pageInfo[activeLocale]);
 }
 
 export default async function About({ params }: { params: Promise<{ locale: string }> }) {

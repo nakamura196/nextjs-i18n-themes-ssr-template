@@ -1,29 +1,30 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { FiSun, FiMoon } from 'react-icons/fi';
 
+const emptySubscribe = () => () => {};
+
+// Returns false on the server and the first client render, then true once
+// hydrated. Avoids the `setState`-in-`useEffect` mount pattern (and the
+// react-hooks/set-state-in-effect warning) while still preventing the
+// theme icon from causing a hydration mismatch.
+function useHydrated() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+}
+
 export const ToggleTheme = () => {
-  const [mounted, setMounted] = useState(false);
+  const hydrated = useHydrated();
   const { theme, setTheme } = useTheme();
 
-  // useEffectはクライアントサイドでのみ実行
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // マウント前はボタンを表示しない（SSRとの整合性のため）
-  if (!mounted) {
-    return (
-      <button
-        type="button"
-        className="w-8 h-8 flex items-center justify-center text-gray-500 dark:text-gray-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800"
-        aria-label="Loading theme toggle"
-      >
-        <span className="sr-only">Loading theme toggle</span>
-      </button>
-    );
+  // マウント前は非活性なプレースホルダを表示（SSRとの整合性・レイアウトシフト防止）
+  if (!hydrated) {
+    return <span className="w-8 h-8 block" aria-hidden="true" />;
   }
 
   return (

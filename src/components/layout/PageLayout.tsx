@@ -1,6 +1,9 @@
 import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-export default function Static({
+
+type BreadcrumbItem = { title: string; href?: string };
+
+export default function PageLayout({
   title,
   description,
   breadcrumbItems,
@@ -9,19 +12,19 @@ export default function Static({
 }: {
   title: string;
   description?: string;
-  breadcrumbItems: { title: string; href?: string }[];
+  breadcrumbItems: BreadcrumbItem[];
   children: React.ReactNode;
   fluid?: boolean;
 }) {
   const t = useTranslations('Common');
-  //  key={`breadcrumb-${title}`}
+
   return (
     <div>
       {/* パンくずリスト */}
       <div className="container mx-auto px-4 py-8 md:py-12">
         <nav
+          aria-label="Breadcrumb"
           className="mb-6 md:mb-8 text-sm text-gray-500 dark:text-gray-400"
-          key={`breadcrumb-${title}`}
         >
           <Link href={`/`} className="hover:text-gray-700 dark:hover:text-gray-200">
             {t('home')}
@@ -46,29 +49,11 @@ export default function Static({
         <div className="container mx-auto px-4">
           {/* 記事ヘッダー */}
           <header className="mb-8 md:mb-12">
-            {/*
-          <div className="flex items-center gap-4 mb-4">
-            <time
-              dateTime={news.attributes.created}
-              className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full"
-            >
-              {format(new Date(news.attributes.created), 'yyyy年MM月dd日', { locale: ja })}
-            </time>
-          </div>
-          */}
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4 md:mb-6">
               {title}
             </h1>
-            {/*
             {description && (
               <p className="text-gray-600 dark:text-gray-300 mb-4 md:mb-6">{description}</p>
-            )}
-            */}
-            {description && (
-              <p
-                className="text-gray-600 dark:text-gray-300 mb-4 md:mb-6"
-                dangerouslySetInnerHTML={{ __html: description }}
-              ></p>
             )}
           </header>
         </div>

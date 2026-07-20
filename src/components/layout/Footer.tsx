@@ -1,26 +1,10 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
-// import { getLocale } from 'next-intl/server';
-// import { getNode } from '@/lib/api/drupal/queries';
 
-// async
 export default async function Footer() {
   const t = await getTranslations('Footer');
   const tCommon = await getTranslations('Common');
-  // const locale = await getLocale();
-
-  /*
-  const node = await getNode('page', 'a13c1495-9d45-4439-a8c2-e93d4fdc32f4', locale);
-
-  if (!node) {
-    return null;
-  }
-
-  // const title = node.attributes.title;
-  // const description = node.attributes.body.value;
-  */
-
-  // const description = 'test';
+  const year = new Date().getFullYear();
 
   return (
     <footer className="bg-gray-100 dark:bg-gray-800 pt-16 pb-8">
@@ -86,7 +70,7 @@ export default async function Footer() {
               </li>
               <li>
                 <a
-                  href="https://next-intl-docs.vercel.app"
+                  href="https://next-intl.dev"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
@@ -111,7 +95,7 @@ export default async function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-gray-200 dark:border-gray-700">
           <div className="flex justify-center items-center">
-            <p className="text-gray-600 dark:text-gray-300">{t('copyright')}</p>
+            <p className="text-gray-600 dark:text-gray-300">{t('copyright', { year })}</p>
           </div>
         </div>
       </div>

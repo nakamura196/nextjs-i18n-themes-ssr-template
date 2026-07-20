@@ -6,7 +6,7 @@ Next.js、next-intl、next-themesを使用した多言語・ダークモード�
 
 - **🌍 多言語対応**: next-intlによる完全な国際化サポート
 - **🌓 ダークモード**: next-themesによるシステム連動のテーマ切り替え
-- **⚡ サーバーサイドレンダリング**: Next.js 14のApp Routerを使用したSSR
+- **⚡ サーバーサイドレンダリング**: Next.js 16のApp Routerを使用したSSR
 - **📱 レスポンシブ**: Tailwind CSSによる完全レスポンシブデザイン
 - **🎨 カスタマイズ可能**: 再利用可能なコンポーネントと設定
 
@@ -50,23 +50,27 @@ npm run dev
 ```
 src/
 ├── app/
-│   └── [locale]/
-│       ├── layout.tsx      # ルートレイアウト
-│       ├── page.tsx        # ホームページ
-│       ├── about/          # Aboutページ
-│       └── example/        # サンプルページ
+│   ├── [locale]/
+│   │   ├── layout.tsx      # ルートレイアウト
+│   │   ├── page.tsx        # ホームページ
+│   │   ├── globals.css     # Tailwind v4 の設定・グローバルスタイル
+│   │   ├── about/          # Aboutページ
+│   │   └── example/        # サンプルページ
+│   ├── icon.svg
+│   └── sitemap.ts          # サイトマップ生成
 ├── components/
-│   ├── layout/            # レイアウトコンポーネント
-│   └── ui/                # UIコンポーネント
+│   ├── layout/            # レイアウトコンポーネント（Header/Footer/Toggle 等）
+│   └── page/              # ページ固有コンポーネント
 ├── constants/
 │   ├── metadata.ts        # メタデータ設定
 │   └── styles.ts          # 共通スタイル定数
 ├── i18n/
-│   └── routing.ts         # 言語ルーティング設定
+│   ├── routing.ts         # 言語ルーティング設定
+│   └── request.ts         # next-intl リクエスト設定
 ├── messages/              # 翻訳ファイル
 │   ├── en.json
 │   └── ja.json
-└── hooks/                 # カスタムフック
+└── proxy.ts               # next-intl プロキシ（旧 middleware）
 ```
 
 ## 🌍 多言語対応
@@ -144,7 +148,8 @@ export function generateStaticParams() {
 // メタデータ生成
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  return getPageMetadata(locale as 'ja' | 'en', {
+  const activeLocale = hasLocale(routing.locales, locale) ? locale : routing.defaultLocale;
+  return getPageMetadata(activeLocale, {
     title: 'ページタイトル',
     description: 'ページの説明',
   });
@@ -153,14 +158,17 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function NewPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  
+
   return (
-    <PageLayout title="ページタイトル">
+    <PageLayout title="ページタイトル" breadcrumbItems={[{ title: 'ページタイトル' }]}>
       {/* ページコンテンツ */}
     </PageLayout>
   );
 }
 ```
+
+> `hasLocale` は `next-intl` からインポートします（`import { hasLocale } from 'next-intl';`）。
+> `PageLayout` の `breadcrumbItems` は必須プロップです。
 
 ## 🚀 ビルドとデプロイ
 
@@ -185,7 +193,7 @@ Vercel、Netlify、またはその他のホスティングサービスにデプ�
 1. **メタデータ**: `src/constants/metadata.ts`でサイト全体の設定を管理
 2. **フッター**: `src/components/layout/Footer.tsx`でリンクや情報を更新
 3. **ヘッダー**: `src/components/layout/Header.tsx`でナビゲーションをカスタマイズ
-4. **テーマ**: `tailwind.config.js`でカラーパレットをカスタマイズ
+4. **テーマ**: Tailwind CSS v4 では設定は CSS ファイルに移行しました。`src/app/[locale]/globals.css` の `@theme` / `@custom-variant` でカラーパレットやダークモードをカスタマイズします
 
 ## 📝 ライセンス
 

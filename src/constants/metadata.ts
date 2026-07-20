@@ -1,3 +1,7 @@
+// Shared canonical site URL. Also consumed by app/sitemap.ts so both
+// stay in sync. Set NEXT_PUBLIC_SITE_URL to your production origin.
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 export const SITE_CONFIG = {
   name: {
     ja: 'Next.js 国際化テンプレート',
@@ -7,7 +11,7 @@ export const SITE_CONFIG = {
     ja: 'Next.js、next-intl、next-themesを使用した多言語・テーマ対応のSSRテンプレート',
     en: 'A multilingual and theme-enabled SSR template using Next.js, next-intl, and next-themes',
   },
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com',
+  url: SITE_URL,
   ogImage: {
     ja: '/ogp-ja.svg',
     en: '/ogp-en.svg',
@@ -56,10 +60,13 @@ export const getMetadata = (locale: 'ja' | 'en') => {
       images: [ogImage],
     },
     alternates: {
-      canonical: SITE_CONFIG.url,
+      // localePrefix: 'as-needed' → the default locale (ja) is served unprefixed.
+      // Per-page canonicals are intentionally left to each page; setting one here
+      // would point every route at the site root.
       languages: {
-        'ja': `${SITE_CONFIG.url}/ja`,
+        'ja': SITE_CONFIG.url,
         'en': `${SITE_CONFIG.url}/en`,
+        'x-default': SITE_CONFIG.url,
       },
     },
   };
