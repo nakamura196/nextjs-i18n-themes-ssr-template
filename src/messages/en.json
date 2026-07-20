@@ -15,7 +15,7 @@
     "ja": "日本語"
   },
   "Footer": {
-    "copyright": "© 2024 Your Company",
+    "copyright": "© {year} Your Company",
     "quickLinks": {
       "title": "Quick Links",
       "about": "About"

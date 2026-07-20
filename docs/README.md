@@ -12,7 +12,7 @@
 
 ### プロジェクト紹介
 
-- [Next.js 15対応 多言語・ダークモード対応SSRテンプレート](./blog/nextjs-i18n-themes-ssr-template.md)
+- [Next.js 16対応 多言語・ダークモード対応SSRテンプレート](./blog/nextjs-i18n-themes-ssr-template.md)
   - テンプレートプロジェクトの概要と機能紹介
   - 技術スタックと実装の特徴
 
@@ -23,7 +23,7 @@ docs/
 ├── README.md          # このファイル
 └── blog/              # ブログ記事
     ├── nextjs-sitemap-with-static-export.md
-    └── nextjs-i18n-themes-ssg-template.md
+    └── nextjs-i18n-themes-ssr-template.md
 ```
 
 ## 記事の追加方法

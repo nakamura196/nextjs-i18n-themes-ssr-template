@@ -21,19 +21,17 @@ const ToggleLanguageInner = () => {
 
   return (
     <div className="flex items-center space-x-2 sm:space-x-4 min-w-0">
-      {routing.locales.map((loc) => {
-        if (loc !== locale) {
-          return (
-            <button
-              key={loc}
-              className="text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer"
-              onClick={() => switchLanguage(loc)}
-            >
-              {t(loc)}
-            </button>
-          );
-        }
-      })}
+      {routing.locales
+        .filter((loc) => loc !== locale)
+        .map((loc) => (
+          <button
+            key={loc}
+            className="text-sm font-medium text-gray-500 hover:text-gray-700 cursor-pointer"
+            onClick={() => switchLanguage(loc)}
+          >
+            {t(loc)}
+          </button>
+        ))}
     </div>
   );
 };

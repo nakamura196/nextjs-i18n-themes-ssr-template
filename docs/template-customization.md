@@ -134,7 +134,7 @@ YOUR_API_KEY=xxx
 ```tsx
 // 変更前
 <a href="https://nextjs.org">Next.js</a>
-<a href="https://next-intl-docs.vercel.app">next-intl</a>
+<a href="https://next-intl.dev">next-intl</a>
 
 // 変更後（例）
 <a href="https://sketchfab.com">Sketchfab</a>
